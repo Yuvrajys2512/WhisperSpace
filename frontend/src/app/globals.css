@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+  --accent-pink: #ec4899;
+}
+
+body {
+  color: var(--foreground);
+  background: radial-gradient(circle at top center, #1e1b4b 0%, #020617 100%);
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl;
+  }
+
+  .glass-card {
+    @apply glass rounded-[2rem] p-8 transition-all duration-500 hover:bg-white/[0.06] hover:border-white/[0.15] hover:shadow-purple-500/10;
+  }
+
+  .pill {
+    @apply px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 border border-white/10 flex items-center gap-2;
+  }
+
+  .pill-active {
+  @apply bg-white/10 border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.05)];
+  }
+
+  .hero-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
