@@ -1,26 +1,35 @@
-from transformers import pipeline
-import torch
+from textblob import TextBlob
 
-# Use a lightweight sentiment model
-# For mood classification, we might need a more specific model or map sentiment to moods
-# For now, let's use a zero-shot-classification model which is versatile
-classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=-1)
-
-MOOD_CATEGORIES = ["Sad", "Calm", "Lonely", "Stressed", "Hopeless", "Hopeful", "Neutral"]
-
+# Use TextBlob for lightweight mood classification
+# This replaces the 7.5GB transformers/torch setup with a few MBs
 def classify_mood(content: str):
     try:
-        result = classifier(content, candidate_labels=MOOD_CATEGORIES)
-        # If confidence is low, assign "Neutral"
-        if result['scores'][0] < 0.4:
+        analysis = TextBlob(content)
+        sentiment = analysis.sentiment.polarity
+        
+        # Map sentiment scores to moods
+        if sentiment > 0.5:
+            return "Hopeful"
+        elif sentiment > 0.1:
+            return "Calm"
+        elif sentiment < -0.5:
+            return "Hopeless"
+        elif sentiment < -0.1:
+            return "Sad"
+        else:
+            # Check for specific keywords for more variety
+            content_lower = content.lower()
+            if "lonely" in content_lower or "alone" in content_lower:
+                return "Lonely"
+            if "stress" in content_lower or "anxious" in content_lower:
+                return "Stressed"
             return "Neutral"
-        return result['labels'][0]
     except Exception as e:
         print(f"Error in mood classification: {e}")
         return "Neutral"
 
 # Simple toxicity filter
-BAD_WORDS = ["hate", "kill", "threat", "violence"] # This should be expanded or use a model
+BAD_WORDS = ["hate", "kill", "threat", "violence", "stupid", "idiot"] 
 
 def is_toxic(content: str):
     content_lower = content.lower()
