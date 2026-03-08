@@ -104,3 +104,10 @@ async def get_stats(db: Session = Depends(get_db)):
         "total_replies": total_replies,
         "safety_moderation": "99.9%"
     }
+
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
