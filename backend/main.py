@@ -43,7 +43,7 @@ async def process_whisper_mood(whisper_id: str, content: str, db: Session):
         whisper.mood = mood
         db.commit()
 
-@app.post("/whispers/", response_model=schemas.Whisper)
+@app.post("/whispers", response_model=schemas.Whisper)
 @limiter.limit("5/minute")
 async def create_whisper(
     request: Request, 
@@ -64,14 +64,14 @@ async def create_whisper(
     
     return db_whisper
 
-@app.get("/whispers/", response_model=List[schemas.Whisper])
+@app.get("/whispers", response_model=List[schemas.Whisper])
 async def read_whispers(skip: int = 0, limit: int = 20, mood: str = None, db: Session = Depends(get_db)):
     query = db.query(models.Whisper)
     if mood:
         query = query.filter(models.Whisper.mood == mood)
     return query.order_by(models.Whisper.created_at.desc()).offset(skip).limit(limit).all()
 
-@app.post("/whispers/{whisper_id}/replies/", response_model=schemas.Reply)
+@app.post("/whispers{whisper_id}/replies", response_model=schemas.Reply)
 @limiter.limit("10/minute")
 async def create_reply(
     request: Request,
